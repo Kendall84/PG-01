@@ -10,6 +10,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -65,7 +66,7 @@
                                  <children>
                                     <Label styleClass="param-label" text="n =" />
                                     <Label fx:id="lblFactN" styleClass="value-badge" text="5" />
-                                    <Slider fx:id="sliderFactN" prefHeight="33.0" prefWidth="261.0" showTickLabels="true" />
+                                    <Slider fx:id="sliderFactN" max="12.0" min="1.0" prefHeight="33.0" prefWidth="215.0" showTickLabels="true" value="1.0" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="34.0" prefWidth="431.0">
@@ -114,11 +115,77 @@
             </Tab>
           <Tab text="fibonacci">
                <content>
-                  <RadioButton mnemonicParsing="false" text="RadioButton" />
+                  <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0">
+                    <items>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Arbol de llamadas" />
+                              <Canvas height="369.0" width="431.0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="561.0" prefWidth="385.0">
+                           <children>
+                              <Label text="Parametros" />
+                              <HBox prefHeight="11.0" prefWidth="431.0">
+                                 <children>
+                                    <Label styleClass="param-label" text="n =" />
+                                    <Label styleClass="value-badge" text="5" />
+                                    <Slider max="15.0" min="1.0" showTickLabels="true" value="1.0" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="35.0" prefWidth="431.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" styleClass="btn-primary" text="Calcular" />
+                                    <Button mnemonicParsing="false" styleClass="btn-ghost" text="Limpiar" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="34.0" prefWidth="431.0">
+                                 <children>
+                                    <ToggleButton mnemonicParsing="false" styleClass="btn-primary" text="Sin memorización" />
+                                    <ToggleButton mnemonicParsing="false" styleClass="btn-primary" text="Con memorización" />
+                                 </children>
+                              </HBox>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label styleClass="stat-label" text="Resultado" />
+                                          <Label styleClass="stat-value" text="--" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                       <children>
+                                          <Label styleClass="stat-label" text="Llamadas" />
+                                          <Label styleClass="stat-value" text="--" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Label styleClass="stat-label" text="Complejidad" />
+                                          <Label styleClass="stat-value" text="--" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </GridPane>
+                              <Label styleClass="section-label" text="Pasos De Ejecucion " />
+                              <ListView prefHeight="200.0" prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                    </items>
+                  </SplitPane>
                </content></Tab>
             <Tab text="grafico">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane />
               </content>
             </Tab>
             <Tab text="Fact-Fib">
