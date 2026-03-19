@@ -1,14 +1,166 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
-
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="681.0" prefWidth="867.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="91.0" prefWidth="867.0" spacing="16.0">
+               <children>
+                  <Label prefHeight="52.0" prefWidth="66.0" styleClass="header-badge" text="PG-01">
+                     <font>
+                        <Font size="24.0" />
+                     </font></Label>
+                  <VBox styleClass="headers">
+                     <children>
+                        <Label text="Recursividad Aplicada en JavaFX">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="IF-3001 Algoritmos y estructuras de datos" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TabPane prefHeight="200.0" prefWidth="200.0" styleClass="main-tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Factorial">
+               <content>
+                  <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
+                     <items>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
+                           <children>
+                              <Label styleClass="panel-title" text="Arbol de llamadas recursivas" />
+                              <Canvas fx:id="canvasTree" height="550.0" styleClass="tree-canvas" width="424.0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="panel">
+                           <children>
+                              <Label styleClass="action -label" text="Parametros" />
+                              <HBox prefHeight="25.0" prefWidth="431.0">
+                                 <children>
+                                    <Label styleClass="param-label" text="n =" />
+                                    <Label fx:id="lblFactN" styleClass="value-badge" text="5" />
+                                    <Slider fx:id="sliderFactN" prefHeight="33.0" prefWidth="261.0" showTickLabels="true" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="34.0" prefWidth="431.0">
+                                 <children>
+                                    <Button fx:id="btnFactCalc" mnemonicParsing="false" styleClass="btn-primary" text="Calcular" />
+                                    <Button fx:id="btnFactReset" mnemonicParsing="false" styleClass="btn-ghost" text="Limpiar" />
+                                 </children>
+                              </HBox>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label styleClass="stat-label" text="resultado" />
+                                          <Label fx:id="lblFactResult" styleClass="stat-value" text="--" />
+                                       </children>
+                                    </VBox>
+                                    <VBox GridPane.columnIndex="1">
+                                       <children>
+                                          <Label styleClass="stat-label" text="Llamadas" />
+                                          <Label fx:id="lblFactCalls" styleClass="stat-value" text="--" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Label styleClass="stat-label" text="Complejidad actual" />
+                                          <Label fx:id="lblComplexity" styleClass="stat-value-sm" text="--" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </GridPane>
+                              <Label styleClass="section-label" text="Pasos De Ejecucion " />
+                              <ListView fx:id="listSteps" prefHeight="200.0" prefWidth="200.0" styleClass="steps-list" />
+                           </children></VBox>
+                     </items>
+                  </SplitPane>
+               </content>
+            </Tab>
+          <Tab text="fibonacci">
+               <content>
+                  <RadioButton mnemonicParsing="false" text="RadioButton" />
+               </content></Tab>
+            <Tab text="grafico">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+            <Tab text="Fact-Fib">
+              <content>
+                <AnchorPane>
+                     <children>
+                        <VBox layoutX="7.0" prefHeight="212.0" prefWidth="299.0" spacing="20.0">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label styleClass="header-badge" text="Valor de n :" />
+                                    <TextField />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="40.0" prefWidth="481.0">
+                                 <children>
+                                    <RadioButton mnemonicParsing="false" text="Fibonacci" />
+                                    <RadioButton mnemonicParsing="false" text="Factorial" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="46.0" prefWidth="535.0" spacing="6.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" text="Calcular" />
+                                    <Button mnemonicParsing="false" text="Button" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="20.0">
+                                 <children>
+                                    <Label text="Resultado" />
+                                    <Label text="--" />
+                                    <Label layoutX="10.0" layoutY="10.0" text="T(n)" />
+                                    <Label layoutX="123.0" layoutY="10.0" text="--" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <TreeView layoutX="14.0" layoutY="212.0" prefHeight="400.0" prefWidth="667.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
