@@ -1,10 +1,7 @@
 package model;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -119,7 +116,7 @@ public class RecursionEngine {
     public List<Step> getSteps(){return steps;}
     public CallNode getTreeRoot(){return treeRoot;}
     public int getCallCount(){return callCount;}
-    public Map<Integer, Long>getMemo(){return memo;}
+    public Map<Integer, Long> getMemo(){return Collections.unmodifiableMap(memo);}
 
 
 }
