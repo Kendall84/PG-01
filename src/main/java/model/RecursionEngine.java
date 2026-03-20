@@ -116,6 +116,98 @@ public class RecursionEngine {
 
     }
 
+    public long computeFibonacci(int n) {
+        reset();
+        treeRoot = new CallNode("fib(" + n + ")", n, 0);
+        long result = fibonacci(n, treeRoot, 0);
+        steps.add(new Step("Resultado final", "fib(" + n + ") = " + result,
+                result, false, callCount));
+        return result;
+    }
+
+    private long fibonacci(int n, CallNode parent, int depth) {
+        callCount++;
+        String label = "fib(" + n + ")";
+        steps.add(new Step("Llamada No.;" + callCount + " " + label,
+                "Calculando " + label, -1, false, callCount));
+
+        if (n <= 1) {
+            parent.result = n;
+            steps.add(new Step("Caso base: " + label + " = " + n,
+                    "fib(" + n + ") = " + n, n, false, callCount));
+            return n;
+        }
+
+        CallNode child1 = new CallNode("fib(" + (n - 1) + ")", n - 1, depth + 1);
+        parent.children.add(child1);
+        long r1 = fibonacci(n - 1, child1, depth + 1);
+
+        CallNode child2 = new CallNode("fib(" + (n - 2) + ")", n - 2, depth + 1);
+        parent.children.add(child2);
+        long r2 = fibonacci(n - 2, child2, depth + 1);
+
+        long result = r1 + r2;
+        parent.result = result;
+
+        steps.add(new Step("Retorno: " + label + " = " + r1 + " + " + r2 + " = " + result,
+                label + " = " + result,
+                result, false, callCount));
+        return result;
+    }
+
+    public long computeFibonacciMemo(int n) {
+        reset();
+        treeRoot = new CallNode("fib(" + n + ")", n, 0);
+        long result = fibonacciMemo(n, treeRoot, 0);
+        steps.add(new Step("Resultado final", "fib(" + n + ") = " + result,
+                result, false, callCount));
+        return result;
+    }
+
+    private long fibonacciMemo(int n, CallNode parent, int depth) {
+        callCount++;
+        String label = "fib(" + n + ")";
+        steps.add(new Step("Llamada No.;" + callCount + " " + label,
+                "Calculando " + label, -1, false, callCount));
+
+        // 1. Comprobar si el resultado ya está en la memoria (memo)
+        if (memo.containsKey(n)) {
+            long memoResult = memo.get(n);
+            parent.result = memoResult;
+            parent.fromMemo = true; // Marcar que este nodo se resolvió con memoria
+            steps.add(new Step("Resultado por Memo: " + label + " = " + memoResult,
+                    "fib(" + n + ") = " + memoResult, memoResult, true, callCount));
+            return memoResult;
+        }
+
+        // 2. Si no está en memoria, calcularlo como siempre (caso base)
+        if (n <= 1) {
+            parent.result = n;
+            memo.put(n, (long) n); // Guardar el caso base en memoria
+            steps.add(new Step("Caso base: " + label + " = " + n,
+                    "fib(" + n + ") = " + n, n, false, callCount));
+            return n;
+        }
+
+        // 3. Llamadas recursivas (si no es caso base ni está en memoria)
+        CallNode child1 = new CallNode("fib(" + (n - 1) + ")", n - 1, depth + 1);
+        parent.children.add(child1);
+        long r1 = fibonacciMemo(n - 1, child1, depth + 1);
+
+        CallNode child2 = new CallNode("fib(" + (n - 2) + ")", n - 2, depth + 1);
+        parent.children.add(child2);
+        long r2 = fibonacciMemo(n - 2, child2, depth + 1);
+
+        long result = r1 + r2;
+        parent.result = result;
+        memo.put(n, result); // 4. Guardar el nuevo resultado en memoria antes de devolverlo
+
+        steps.add(new Step("Retorno: " + label + " = " + r1 + " + " + r2 + " = " + result,
+                label + " = " + result,
+                result, false, callCount));
+        return result;
+    }
+
     public List<Step> getSteps(){return steps;}
     public CallNode getTreeRoot(){return treeRoot;}
     public int getCallCount(){return callCount;}
