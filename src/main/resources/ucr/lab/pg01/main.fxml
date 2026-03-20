@@ -229,7 +229,7 @@
                               </HBox>
                               <HBox prefHeight="40.0" prefWidth="481.0">
                                  <children>
-                                    <RadioButton mnemonicParsing="false" text="Fibonacci" />
+                                    <RadioButton mnemonicParsing="false" selected="true" text="Fibonacci" />
                                     <RadioButton mnemonicParsing="false" text="Factorial" />
                                  </children>
                               </HBox>
