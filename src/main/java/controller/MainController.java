@@ -11,18 +11,19 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import model.Recursion;
 import model.RecursionEngine;
+import model.TreePainter;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainController implements Initializable {
 
+    // ----- UI GENERAL -----
     @FXML
-    private Canvas canvasTree;
+    private Canvas canvasTree; // fx:id="canvasTree" (Factorial)
     @FXML
     private Button btnFactReset;
     @FXML
@@ -34,43 +35,43 @@ public class MainController implements Initializable {
     @FXML
     private Label lblFactN;
     @FXML
-    private ListView listSteps;
+    private ListView<String> listSteps;
     @FXML
     private Label lblFactResult;
     @FXML
     private Label lblFactCalls;
 
     // ----- UI DE FIBONACCI -----
-    // Asigna estos fx:id en Scene Builder para la pestaña de Fibonacci:
-
     @FXML
-    private Slider sliderFibN;      // fx:id="sliderFibN"
+    private Canvas canvasFibTree;   // fx:id="canvasFibTree" (Fibonacci)
     @FXML
-    private Label lblFibN;          // fx:id="lblFibN"
+    private Slider sliderFibN;
     @FXML
-    private Button btnFibCalc;      // fx:id="btnFibCalc"
+    private Label lblFibN;
     @FXML
-    private Button btnFibReset;     // fx:id="btnFibReset"
+    private Button btnFibCalc;
     @FXML
-    private Label lblFibResult;     // fx:id="lblFibResult"
+    private Button btnFibReset;
     @FXML
-    private Label lblFibCalls;      // fx:id="lblFibCalls"
+    private Label lblFibResult;
     @FXML
-    private Label lblFibComplexity; // fx:id="lblFibComplexity"
+    private Label lblFibCalls;
     @FXML
-    private ListView listFibSteps;  // fx:id="listFibSteps"
+    private Label lblFibComplexity;
     @FXML
-    private ToggleButton toggleFibNoMemo; // fx:id="toggleFibNoMemo"
+    private ListView<String> listFibSteps;
     @FXML
-    private ToggleButton toggleFibMemo;   // fx:id="toggleFibMemo"
+    private ToggleButton toggleFibNoMemo;
+    @FXML
+    private ToggleButton toggleFibMemo;
 
     private ToggleGroup fibMemoGroup;
 
-
-    //atributos internos de la clase controlller
+    // ----- ATRIBUTOS INTERNOS -----
     private final RecursionEngine engine = new RecursionEngine();
+    private final TreePainter painter = new TreePainter(); // Instancia del pintor
     private RecursionEngine.CallNode lastRoot;
-    private List<RecursionEngine.CallNode> factBFS;
+    private List<RecursionEngine.CallNode> bfsOrder;
 
 
     @Override
@@ -90,8 +91,6 @@ public class MainController implements Initializable {
     }
 
     private void setupFibTab() {
-        // Configuracion de fibonacci
-        // Asegúrate de que sliderFibN no sea nulo (esto pasará si no has asignado el fx:id en el FXML)
         if (sliderFibN != null) {
             sliderFibN.setMin(1); sliderFibN.setMax(15); sliderFibN.setValue(5);
             sliderFibN.setMajorTickUnit(1); sliderFibN.setSnapToTicks(true);
@@ -100,12 +99,11 @@ public class MainController implements Initializable {
             });
         }
         
-        // Configurar ToggleButtons para memorizacion
         if (toggleFibNoMemo != null && toggleFibMemo != null) {
             fibMemoGroup = new ToggleGroup();
             toggleFibNoMemo.setToggleGroup(fibMemoGroup);
             toggleFibMemo.setToggleGroup(fibMemoGroup);
-            toggleFibNoMemo.setSelected(true); // Por defecto sin memorizacion
+            toggleFibNoMemo.setSelected(true);
         }
 
         if (btnFibCalc != null) btnFibCalc.setOnAction(event -> runFibonacci());
@@ -117,7 +115,9 @@ public class MainController implements Initializable {
         lblFactCalls.setText("-");
         lblComplexity.setText("-");
         listSteps.getItems().clear();
-
+        if (canvasTree != null) {
+            canvasTree.getGraphicsContext2D().clearRect(0, 0, canvasTree.getWidth(), canvasTree.getHeight());
+        }
     }
 
     private void resetFibTab() {
@@ -125,51 +125,49 @@ public class MainController implements Initializable {
         if (lblFibCalls != null) lblFibCalls.setText("-");
         if (lblFibComplexity != null) lblFibComplexity.setText("-");
         if (listFibSteps != null) listFibSteps.getItems().clear();
-
+        if (canvasFibTree != null) {
+            canvasFibTree.getGraphicsContext2D().clearRect(0, 0, canvasFibTree.getWidth(), canvasFibTree.getHeight());
+        }
     }
 
     private void runFactorial() {
         int n = (int) sliderFactN.getValue();
-//        AtomicInteger counter = new AtomicInteger(0);
-//        long result = Recursion.factorial(n,counter);
-//        lblFactResult.setText(util.Utility.format(result));
-//        lblFactCalls.setText(String.valueOf(counter.get()));
-
         engine.computeFactorial(n);
         lastRoot = engine.getTreeRoot();
+        bfsOrder = TreePainter.collectBFS(lastRoot);
 
-
-        //llenamos la lista pasos
+        // Llenar lista de pasos
         ObservableList<String> items = FXCollections.observableArrayList();
-        for (int i = 0; i<n; i++){
+        for (int i = 0; i < engine.getSteps().size(); i++){
             RecursionEngine.Step step = engine.getSteps().get(i);
-            items.add(String.format("[%02d] %s", i+1, step.description));
+            items.add(String.format("[%02d] %s", i + 1, step.description));
         }
         listSteps.setItems(items);
-        lblFactResult.setText(util.Utility.format(engine.getTreeRoot().result));
+        
+        lblFactResult.setText(String.valueOf(engine.getTreeRoot().result));
         lblFactCalls.setText(String.valueOf(engine.getCallCount()));
         lblComplexity.setText("O(n) = O(" + n + ") llamadas");
+
+        // Dibujar el árbol en el canvas de Factorial (canvasTree)
+        drawTree(canvasTree, lastRoot, bfsOrder);
     }
 
     private void runFibonacci() {
         if (sliderFibN == null) return;
         int n = (int) sliderFibN.getValue();
         
-        // Verificar si usamos memorizacion
-        boolean useMemo = false;
-        if (toggleFibMemo != null && toggleFibMemo.isSelected()) {
-            useMemo = true;
-        }
+        boolean useMemo = toggleFibMemo != null && toggleFibMemo.isSelected();
 
         if (useMemo) {
-            engine.computeFibonacciMemo(n); // Asumimos que implementaste este metodo en RecursionEngine como sugerido
+            engine.computeFibonacciMemo(n);
         } else {
             engine.computeFibonacci(n);
         }
         
         lastRoot = engine.getTreeRoot();
+        bfsOrder = TreePainter.collectBFS(lastRoot);
 
-        //llenamos la lista pasos
+        // Llenar lista de pasos
         if (listFibSteps != null) {
             ObservableList<String> items = FXCollections.observableArrayList();
             for (int i = 0; i < engine.getSteps().size(); i++) {
@@ -179,15 +177,25 @@ public class MainController implements Initializable {
             listFibSteps.setItems(items);
         }
         
-        if (lblFibResult != null) lblFibResult.setText(util.Utility.format(engine.getTreeRoot().result));
+        if (lblFibResult != null) lblFibResult.setText(String.valueOf(engine.getTreeRoot().result));
         if (lblFibCalls != null) lblFibCalls.setText(String.valueOf(engine.getCallCount()));
         
         if (lblFibComplexity != null) {
-            if (useMemo) {
-                lblFibComplexity.setText("O(n) aprox");
-            } else {
-                lblFibComplexity.setText("O(2^n)");
-            }
+            lblFibComplexity.setText(useMemo ? "O(n) aprox" : "O(2^n)");
         }
+
+        // Dibujar el árbol en el canvas de Fibonacci (canvasFibTree)
+        drawTree(canvasFibTree, lastRoot, bfsOrder);
+    }
+
+    /**
+     * Dibuja el árbol de llamadas en el canvas especificado.
+     * @param canvas El canvas sobre el que se va a dibujar.
+     * @param root La raíz del árbol a dibujar.
+     * @param bfsOrder La lista de nodos en orden BFS para determinar qué dibujar.
+     */
+    private void drawTree(Canvas canvas, RecursionEngine.CallNode root, List<RecursionEngine.CallNode> bfsOrder) {
+        if (canvas == null || root == null) return;
+        painter.paint(canvas, root, bfsOrder.size(), bfsOrder);
     }
 }

@@ -123,7 +123,7 @@
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <Label text="Arbol de llamadas" />
-                              <Canvas height="369.0" width="431.0" />
+                              <Canvas fx:id="canvasFibTree" height="369.0" width="431.0" />
                            </children>
                         </VBox>
                         <VBox prefHeight="561.0" prefWidth="385.0">
