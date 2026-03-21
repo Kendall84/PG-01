@@ -40,7 +40,7 @@ public class HelloApplication extends Application {
             int n = Integer.parseInt(name.getText());
 
         });
-        //Ahora vamos a determinar el tiempo de ejecucion de un algortimo
+
 
         long n = Integer.parseInt(name.getText());
 

@@ -36,19 +36,47 @@ public class TreePainter {
                       int highlightStep, List<RecursionEngine.CallNode> visitedOrder) {
         if (root == null) return;
 
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        double W = canvas.getWidth();
-        double H = canvas.getHeight();
-
-        gc.setFill(COL_BG);
-        gc.fillRect(0, 0, W, H);
 
         positions.clear();
-        // ── Asignar posiciones ──────────────────────────────────────────────
+
+
         double[] counter = {0};
         assignX(root, counter);
-        double totalWidth = counter[0];
-        double offsetX = Math.max(0, (W - totalWidth) / 2.0) + NODE_R;
+        
+
+        double totalLeaves = counter[0];
+        double requiredWidth = Math.max(canvas.getWidth(), 
+                                      totalLeaves * (NODE_R * 2 + H_GAP) + NODE_R * 2);
+        
+        // Calcular profundidad máxima para el alto
+        int maxDepth = getMaxDepth(root);
+        double requiredHeight = Math.max(canvas.getHeight(), 
+                                       (maxDepth + 1) * V_GAP + NODE_R * 2 + 50);
+
+
+        if (requiredWidth > canvas.getWidth()) {
+            canvas.setWidth(requiredWidth);
+        }
+        if (requiredHeight > canvas.getHeight()) {
+            canvas.setHeight(requiredHeight);
+        }
+
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(COL_BG);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+
+        // ── Asignar posiciones ──────────────────────────────────────────────
+        double realContentWidth = totalLeaves * (NODE_R * 2 + H_GAP);
+        double offsetX;
+        if (realContentWidth < canvas.getWidth()) {
+             offsetX = (canvas.getWidth() - realContentWidth) / 2.0 + NODE_R;
+        } else {
+             offsetX = NODE_R + 10; // Margen izquierdo mínimo
+        }
+
+
         shiftX(root, offsetX, 0);
 
         // ── Dibujar aristas primero ─────────────────────────────────────────
@@ -61,16 +89,27 @@ public class TreePainter {
                 visitedOrder.subList(0, Math.min(highlightStep, visitedOrder.size())));
         drawNodes(gc, root, visited, highlightStep, visitedOrder);
     }
+    
+    private int getMaxDepth(RecursionEngine.CallNode node) {
+        if (node == null) return 0;
+        int max = 0;
+        for (RecursionEngine.CallNode child : node.children) {
+            max = Math.max(max, getMaxDepth(child));
+        }
+        return max + 1;
+    }
 
     // ── Asignar coordenada X con algoritmo de árbol simple ───────────────────
     private void assignX(RecursionEngine.CallNode node, double[] counter) {
         if (node.children.isEmpty()) {
-            double x = counter[0] * (NODE_R * 2 + H_GAP) + NODE_R;
+            double x = counter[0] * (NODE_R * 2 + H_GAP); 
             positions.put(node, new double[]{x, 0});
             counter[0]++;
         } else {
             for (RecursionEngine.CallNode child : node.children)
                 assignX(child, counter);
+            
+
             double firstX = positions.get(node.children.get(0))[0];
             double lastX  = positions.get(node.children.get(node.children.size()-1))[0];
             positions.put(node, new double[]{(firstX + lastX) / 2.0, 0});
@@ -80,7 +119,7 @@ public class TreePainter {
     private void shiftX(RecursionEngine.CallNode node, double ox, int depth) {
         double[] pos = positions.get(node);
         if (pos != null) {
-            pos[0] += (depth == 0 ? 0 : 0);   // raíz ya centrada
+            pos[0] += ox;
             pos[1]  = depth * V_GAP + NODE_R + 10;
         }
         for (RecursionEngine.CallNode child : node.children)

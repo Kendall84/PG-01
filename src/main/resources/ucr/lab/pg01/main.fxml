@@ -8,12 +8,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -50,8 +52,51 @@
       </VBox>
    </top>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" styleClass="main-tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="mainTabPane" prefHeight="200.0" prefWidth="200.0" styleClass="main-tabs" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
+            <Tab text="Fact-Fib">
+              <content>
+                <AnchorPane>
+                     <children>
+                        <VBox layoutX="7.0" prefHeight="212.0" prefWidth="299.0" spacing="20.0">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Label styleClass="header-badge" text="Valor de n :" />
+                                    <TextField fx:id="tfOldN" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="40.0" prefWidth="481.0">
+                                 <children>
+                                    <RadioButton fx:id="radioOldFib" mnemonicParsing="false" selected="true" text="Fibonacci">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="oldGroup" />
+                                       </toggleGroup>
+                                    </RadioButton>
+                                    <RadioButton fx:id="radioOldFact" mnemonicParsing="false" text="Factorial" toggleGroup="$oldGroup" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="46.0" prefWidth="535.0" spacing="6.0">
+                                 <children>
+                                    <Button fx:id="btnOldCalc" mnemonicParsing="false" text="Calcular" />
+                                    <Button fx:id="btnOldClean" mnemonicParsing="false" text="Limpiar" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="20.0">
+                                 <children>
+                                    <Label text="Resultado" />
+                                    <Label fx:id="lblOldResult" text="--" />
+                                    <Label layoutX="10.0" layoutY="10.0" text="T(n)" />
+                                    <Label fx:id="lblOldTime" layoutX="123.0" layoutY="10.0" text="--" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <TreeView fx:id="treeViewOld" layoutX="14.0" layoutY="212.0" prefHeight="400.0" prefWidth="667.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
           <Tab text="Factorial">
                <content>
                   <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
@@ -59,7 +104,11 @@
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="8.0" styleClass="panel">
                            <children>
                               <Label styleClass="panel-title" text="Arbol de llamadas recursivas" />
-                              <Canvas fx:id="canvasTree" height="550.0" styleClass="tree-canvas" width="424.0" />
+                              <ScrollPane pannable="true" prefHeight="550.0" prefWidth="424.0" style="-fx-background-color: transparent;">
+                                 <content>
+                                    <Canvas fx:id="canvasTree" height="550.0" styleClass="tree-canvas" width="424.0" />
+                                 </content>
+                              </ScrollPane>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="panel">
@@ -123,7 +172,11 @@
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
                               <Label text="Arbol de llamadas" />
-                              <Canvas fx:id="canvasFibTree" height="369.0" width="431.0" />
+                              <ScrollPane pannable="true" prefHeight="369.0" prefWidth="431.0">
+                                 <content>
+                                    <Canvas fx:id="canvasFibTree" height="369.0" width="431.0" />
+                                 </content>
+                              </ScrollPane>
                            </children>
                         </VBox>
                         <VBox prefHeight="561.0" prefWidth="385.0">
@@ -186,72 +239,32 @@
                     </items>
                   </SplitPane>
                </content></Tab>
-            <Tab text="Grafico">
+            <Tab fx:id="tabGraph" text="Grafico">
               <content>
                 <AnchorPane>
                      <children>
                         <HBox layoutX="2.0" layoutY="48.0" prefHeight="377.0" prefWidth="838.0">
                            <children>
-                              <BarChart disable="true">
+                              <BarChart fx:id="barChartTime" title="Tiempos de Ejecución">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
+                                  <CategoryAxis fx:id="xAxisTime" label="Valor de n" side="BOTTOM" />
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis side="LEFT" />
+                                  <NumberAxis fx:id="timeAxis" label="Tiempo (ns)" side="LEFT" />
                                 </yAxis>
                               </BarChart>
-                              <BarChart>
+                              <BarChart fx:id="barChartCalls" title="Llamadas Recursivas">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
+                                  <CategoryAxis fx:id="xAxisCalls" label="Valor de n" side="BOTTOM" />
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis side="LEFT" />
+                                  <NumberAxis fx:id="callsAxis" label="Num. Llamadas" side="LEFT" />
                                 </yAxis>
                               </BarChart>
                            </children>
                         </HBox>
-                        <Label layoutX="47.0" layoutY="21.0" text="Label" />
-                        <Label layoutX="476.0" layoutY="21.0" text="Label" />
+                        <Label layoutX="47.0" layoutY="21.0" text="Comparativa de Rendimiento (Fibonacci)" styleClass="panel-title"/>
                      </children></AnchorPane>
-              </content>
-            </Tab>
-            <Tab text="Fact-Fib">
-              <content>
-                <AnchorPane>
-                     <children>
-                        <VBox layoutX="7.0" prefHeight="212.0" prefWidth="299.0" spacing="20.0">
-                           <children>
-                              <HBox>
-                                 <children>
-                                    <Label styleClass="header-badge" text="Valor de n :" />
-                                    <TextField />
-                                 </children>
-                              </HBox>
-                              <HBox prefHeight="40.0" prefWidth="481.0">
-                                 <children>
-                                    <RadioButton mnemonicParsing="false" selected="true" text="Fibonacci" />
-                                    <RadioButton mnemonicParsing="false" text="Factorial" />
-                                 </children>
-                              </HBox>
-                              <HBox prefHeight="46.0" prefWidth="535.0" spacing="6.0">
-                                 <children>
-                                    <Button mnemonicParsing="false" text="Calcular" />
-                                    <Button mnemonicParsing="false" text="Button" />
-                                 </children>
-                              </HBox>
-                              <HBox spacing="20.0">
-                                 <children>
-                                    <Label text="Resultado" />
-                                    <Label text="--" />
-                                    <Label layoutX="10.0" layoutY="10.0" text="T(n)" />
-                                    <Label layoutX="123.0" layoutY="10.0" text="--" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                        <TreeView layoutX="14.0" layoutY="212.0" prefHeight="400.0" prefWidth="667.0" />
-                     </children>
-                  </AnchorPane>
               </content>
             </Tab>
         </tabs>
